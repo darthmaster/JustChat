@@ -25,14 +25,11 @@ namespace JustChatClient
             this.DataContext = chat;            
         }
 
-        private async void inputBox_KeyDown(object sender, KeyEventArgs e)
+        private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key.ToString() == "Return")
             {
-                chat.UserName = userName.Text;
-                chat.Message = inputBox.Text;
-                await chat.SendMessage();
-                inputBox.Text = string.Empty;
+                sendButton_Click(sender, e);
             }
         }
 
@@ -44,6 +41,14 @@ namespace JustChatClient
         private async void Window_Initialized(object sender, EventArgs e)
         {
             await chat.Connect();
+        }
+
+        private async void sendButton_Click(object sender, RoutedEventArgs e)
+        {
+            chat.UserName = userName.Text;
+            chat.Message = inputBox.Text;
+            await chat.SendMessage();
+            inputBox.Text = string.Empty;
         }
     }
 }

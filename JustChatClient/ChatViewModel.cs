@@ -47,7 +47,7 @@ namespace JustChatClient
         public ChatViewModel()
         {
             hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:44327/chat")
+                .WithUrl("https://localhost:5001/chat")
                 .Build();
             Messages = new ObservableCollection<MessageData>();
             IsConnected = false;
@@ -74,12 +74,12 @@ namespace JustChatClient
             try
             {
                 await hubConnection.StartAsync();
-                SendLocalMessage(string.Empty, "Ого, как вы сюда вошли?");
+                SendLocalMessage(string.Empty, "Вы вошли в чат");
                 IsConnected = true;
             }
             catch (Exception ex)
             {
-                SendLocalMessage(string.Empty, $"Хаха, не вошёл, лошара! А всё потому, что {ex.Message}");
+                SendLocalMessage(string.Empty, $"Не удалось войти в чат по причине: {ex.Message}");
             }
         }
         public async Task Disconnect()
@@ -87,7 +87,7 @@ namespace JustChatClient
             if (!IsConnected) return;
             await hubConnection.StopAsync();
             IsConnected = false;
-            SendLocalMessage(string.Empty, "Вы покинули этих людей, но вас не забудут...");
+            SendLocalMessage(string.Empty, "Вы вышли из чата");
         }
         public async Task SendMessage()
         {
@@ -95,11 +95,10 @@ namespace JustChatClient
             {
                 IsBusy = true;
                 await hubConnection.InvokeAsync("Send", UserName, Message);
-                //SendLocalMessage(UserName, Message);
             }
             catch(Exception ex)
             {
-                SendLocalMessage(string.Empty, $"Что-то пошло не так как задумано. Причиной тому: {ex.Message}");
+                SendLocalMessage(string.Empty, $"Сообщение не отправлено потому, что: {ex.Message}");
             }
             finally
             {

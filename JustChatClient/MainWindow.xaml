@@ -16,15 +16,17 @@
         Height="500" Width="495" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MinWidth="495" MinHeight="500">
     <Grid 
         ClipToBounds="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="20*"/>
+        </Grid.ColumnDefinitions>
         <TextBox 
-            x:Name="inputBox" 
-            HorizontalAlignment="Right"  
+            x:Name="inputBox"  
             TextWrapping="Wrap" 
             VerticalAlignment="Bottom" 
-            Width="285" 
             Height="24" 
             KeyDown="inputBox_KeyDown" 
-            Margin="0,0,10,25" BorderThickness="2,2,2,2"
+            Margin="0,0,55,25" BorderThickness="2,2,2,2" Grid.Column="1"
         />
         <TextBox 
             x:Name="userName" 
@@ -32,7 +34,7 @@
             Text="user" 
             TextWrapping="NoWrap" 
             VerticalAlignment="Top" 
-            Margin="57,10,0,0" BorderBrush="#00ABADB3" MaxLines="1" Height="26" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" VerticalScrollBarVisibility="Disabled"
+            Margin="57,10,0,0" BorderBrush="#00ABADB3" MaxLines="1" Height="26" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" VerticalScrollBarVisibility="Disabled" MinWidth="138" MinHeight="26" MaxHeight="26"
         />
         <ListView 
             x:Name="chatLog"  
@@ -40,7 +42,7 @@
             Focusable="False" 
             Margin="0,44,10,54" 
             VerticalContentAlignment="Center" 
-            BorderThickness="2,2,2,2" SelectionMode="Extended" HorizontalAlignment="Right" Width="285" Background="{x:Null}" >
+            BorderThickness="2,2,2,2" SelectionMode="Extended" Background="{x:Null}" Grid.Column="1" >
             <ListView.ItemContainerStyle>
                 <Style 
                     TargetType="{x:Type ListBoxItem}"
@@ -60,13 +62,12 @@
             </ListBox.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel x:Name="chatMessage" 
+                    <WrapPanel x:Name="chatMessage" 
                         Orientation="Horizontal" 
                         VerticalAlignment="Stretch" 
                         IsEnabled="True" 
-                        ClipToBounds="False" 
-                        Focusable="False" 
-                        Width="295">
+                        ClipToBounds="True" 
+                        Focusable="False" Grid.IsSharedSizeScope="True">
                         <Label 
                             x:Name="messageSender" 
                             Content="{Binding User}" 
@@ -78,13 +79,13 @@
                             TextWrapping="Wrap" 
                             TextTrimming="WordEllipsis" 
                             VerticalAlignment="Center"/>
-                    </StackPanel>
+                    </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
         <Label Content="Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-        <StatusBar Height="20" VerticalAlignment="Bottom">
+        <StatusBar Height="20" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
             <CheckBox 
             x:Name="isConnected" 
             Content="Connection" 
@@ -97,13 +98,26 @@
                     <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
                 </CheckBox.Foreground>
             </CheckBox>
+            <CheckBox 
+            x:Name="isBusy" 
+            Content="Busy" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Top" 
+            IsChecked="{Binding IsBusy}" 
+            Focusable="False" IsEnabled="False" BorderBrush="#00707070"
+            >
+                <CheckBox.Foreground>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
+                </CheckBox.Foreground>
+            </CheckBox>
         </StatusBar>
-        <ListView HorizontalAlignment="Left" Margin="10,44,0,25" Width="185" BorderThickness="2,2,2,2" Background="Transparent" BorderBrush="#FFABADB3">
+        <ListView Margin="10,44,5,25" BorderThickness="2,2,2,2" Background="Transparent" BorderBrush="#FFABADB3">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Label Content="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Button x:Name="sendButton" Content="Send" Margin="0,0,10,25" VerticalAlignment="Bottom" Height="24" Click="sendButton_Click" HorizontalAlignment="Right" Width="40" BorderThickness="2,2,2,2" BorderBrush="#FFABADB3" Grid.Column="1"/>
     </Grid>
 </Window>
