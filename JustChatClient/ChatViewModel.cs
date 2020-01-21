@@ -12,8 +12,9 @@ namespace JustChatClient
 {
     public class ChatViewModel : INotifyPropertyChanged
     {
-        MainWindow window;
+       // MainWindow window;
         HubConnection hubConnection;
+        string IP = "localhost";
         public string UserName { get; set; }
         public string Message { get; set; }
         public ObservableCollection<MessageData> Messages { get; }
@@ -44,10 +45,11 @@ namespace JustChatClient
             }
         }
         //public Command SendMessageCommand { get; }
-        public ChatViewModel()
+        public ChatViewModel(string IP)
         {
             hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:5001/chat")
+                .WithUrl($"http://{IP}:5000/chat")
+                .WithAutomaticReconnect()
                 .Build();
             Messages = new ObservableCollection<MessageData>();
             IsConnected = false;
@@ -73,6 +75,9 @@ namespace JustChatClient
             if (IsConnected) { SendLocalMessage("client", "connected=true"); return; };
             try
             {
+                //hubConnection = new HubConnectionBuilder()
+                //.WithUrl($"https://{IP}:5001/chat")
+                //.Build();
                 await hubConnection.StartAsync();
                 SendLocalMessage(string.Empty, "Вы вошли в чат");
                 IsConnected = true;
@@ -112,10 +117,7 @@ namespace JustChatClient
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string prop = "")
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }
