@@ -97,7 +97,7 @@ namespace JustChatClient
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("jopa");
+                    MessageBox.Show(ex.Message);
                 }
                 finally
                 {

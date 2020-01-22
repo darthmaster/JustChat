@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net.NetworkInformation;
 
 namespace JustChat
 {
@@ -35,6 +36,12 @@ namespace JustChat
 
                 });
             });
+
+        }
+        public static string GetLocalFQDN()
+        {
+            var props = IPGlobalProperties.GetIPGlobalProperties();
+            return props.HostName + (string.IsNullOrWhiteSpace(props.DomainName) ? "" : "." + props.DomainName);
         }
     }
 }
