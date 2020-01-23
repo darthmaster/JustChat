@@ -10,10 +10,9 @@
         ResizeMode="CanResize" 
         SizeToContent="Manual" 
         Closing="Window_Closing" 
-        Initialized="Window_Initialized" 
         HorizontalAlignment="Stretch" 
         Icon="JustChat.ico" 
-        Height="500" Width="495" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MinWidth="495" MinHeight="500" SizeChanged="JCC_SizeChanged" Grid.IsSharedSizeScope="True">
+        Height="500" Width="570" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MinWidth="495" MinHeight="500" Grid.IsSharedSizeScope="True">
     <Grid 
         ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled">
         <Grid.ColumnDefinitions>
@@ -122,9 +121,9 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button x:Name="sendButton" Content="Send" Margin="0,0,10,25" VerticalAlignment="Bottom" Height="24" Click="sendButton_Click" BorderThickness="2,2,2,2" BorderBrush="#FFABADB3" Grid.Column="1" HorizontalAlignment="Right" Width="40"/>
+        <Button x:Name="sendButton" Content="Send" Margin="0,0,10,25" VerticalAlignment="Bottom" Height="24" Click="SendButton_Click" BorderThickness="2,2,2,2" BorderBrush="#FFABADB3" Grid.Column="1" HorizontalAlignment="Right" Width="40"/>
         <Label Content="ServerIP:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
         <TextBox x:Name="serverIP" HorizontalAlignment="Left" Height="26" Margin="71,10,0,0" Text="localhost" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" BorderThickness="1,1,1,1" BorderBrush="#00ABADB3"/>
-        <Button x:Name="loginButton" Content="Connect" Grid.Column="1" Margin="0,10,10,0" VerticalAlignment="Top" Click="Button_Click" BorderThickness="2,2,2,2" Height="26" Padding="0,0,0,0" HorizontalAlignment="Right" Width="85"/>
+        <Button x:Name="loginButton" Content="Connect" Grid.Column="1" Margin="0,10,10,0" VerticalAlignment="Top" Click="LoginButton_Click" BorderThickness="2,2,2,2" Height="26" Padding="0,0,0,0" HorizontalAlignment="Right" Width="85"/>
     </Grid>
 </Window>

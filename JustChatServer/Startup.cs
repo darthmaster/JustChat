@@ -38,10 +38,5 @@ namespace JustChat
             });
 
         }
-        public static string GetLocalFQDN()
-        {
-            var props = IPGlobalProperties.GetIPGlobalProperties();
-            return props.HostName + (string.IsNullOrWhiteSpace(props.DomainName) ? "" : "." + props.DomainName);
-        }
     }
 }

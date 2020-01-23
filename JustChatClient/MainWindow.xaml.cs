@@ -7,21 +7,16 @@ namespace JustChatClient
     public partial class MainWindow : Window
     {
         ChatViewModel chat;
-        int MaxInputStringLength = 35;
-        int MaxChatStringLength = 35;
+        //int MaxInputStringLength = 35;
+        //int MaxChatStringLength = 35;
         public MainWindow()
         {
             InitializeComponent();
-            isConnected.IsChecked=false;
+            isConnected.IsChecked = false;
         }
 
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
-            //if (inputBox.Text.Length - inputBox.Text.LastIndexOf("\n") == MaxInputStringLength)
-            //{
-            //    inputBox.AppendText(" \n");
-            //    inputBox.SelectionStart = inputBox.Text.Length;
-            //}
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Shift && e.Key == Key.Enter)
             {
                 inputBox.AppendText("\n");
@@ -29,59 +24,11 @@ namespace JustChatClient
             }
             else if (e.Key == Key.Enter)
             {
-                sendButton_Click(sender, e);
+                SendButton_Click(sender, e);
             }
         }
-
-        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            await chat.Disconnect();
-        }
-
-        private async void Window_Initialized(object sender, EventArgs e)
-        {
-            //await chat.Connect(serverIP.Text);
-        }
-
-        private async void sendButton_Click(object sender, RoutedEventArgs e)
-        {
-            chat.UserName = userName.Text;
-            chat.Message = inputBox.Text.Replace(" \n", " ");
-            await chat.SendMessage();
-            inputBox.Text = string.Empty;
-        }
-
-        private void JCC_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            MaxChatStringLength = (int)chatLog.ActualWidth / 7;
-            MaxInputStringLength = (int)inputBox.ActualWidth / 7;
-            
-        }
-
-        public void messageFormat()
-        {//7 на пиксель
-            int maxLen = MaxChatStringLength - (chat.Messages[-1].User.Length + 1);
-            if (chat.Messages[-1].Message.Length > maxLen)
-            {
-                string new_msg = string.Empty;
-                var msg = chat.Messages[-1].Message.Split(" ");
-                foreach (string str in msg)
-                {
-                    if ((new_msg.Length - new_msg.LastIndexOf("\n") + str.Length) <= maxLen)
-                    {
-                        new_msg += " " + str;
-                    }
-                    else
-                    {
-                        new_msg += "\n" + str;
-                    }
-                }
-                chat.Messages[-1].Message = new_msg;
-            }
-
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
+       
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if ((bool)isConnected.IsChecked)
             {
@@ -91,26 +38,56 @@ namespace JustChatClient
             else
             {
                 chat = new ChatViewModel(serverIP.Text);
-                try
-                {
-                    await chat.Connect();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    this.DataContext = chat;
-                    loginButton.Content = "Disconnect";
-                } 
+                await chat.Connect();
+                this.DataContext = chat;
+                if (chat.IsConnected) loginButton.Content = "Disconnect";
             }
         }
-
-        private void chatLog_Selected(object sender, RoutedEventArgs e)
+        private async void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            messageFormat();
-            
+            chat.UserName = userName.Text;
+            chat.Message = inputBox.Text.Replace(" \n", " ");
+            await chat.SendMessage();
+            inputBox.Text = string.Empty;
         }
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await chat.Disconnect();
+        }
+
+        //private void JCC_SizeChanged(object sender, SizeChangedEventArgs e)
+        //{
+        //    MaxChatStringLength = (int)chatLog.ActualWidth / 7;
+        //    MaxInputStringLength = (int)inputBox.ActualWidth / 7;
+
+        //}
+
+        //public void messageFormat()
+        //{//7 на пиксель
+        //    int maxLen = MaxChatStringLength - (chat.Messages[-1].User.Length + 1);
+        //    if (chat.Messages[-1].Message.Length > maxLen)
+        //    {
+        //        string new_msg = string.Empty;
+        //        var msg = chat.Messages[-1].Message.Split(" ");
+        //        foreach (string str in msg)
+        //        {
+        //            if ((new_msg.Length - new_msg.LastIndexOf("\n") + str.Length) <= maxLen)
+        //            {
+        //                new_msg += " " + str;
+        //            }
+        //            else
+        //            {
+        //                new_msg += "\n" + str;
+        //            }
+        //        }
+        //        chat.Messages[-1].Message = new_msg;
+        //    }
+
+        //}
+
+        //private void chatLog_Selected(object sender, RoutedEventArgs e)
+        //{
+        //    messageFormat();      
+        //}
     }
 }
