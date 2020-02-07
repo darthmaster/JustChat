@@ -14,7 +14,7 @@ namespace JustChatClient
     {
        // MainWindow window;
         HubConnection hubConnection;
-        string IP = "localhost";
+
         public string UserName { get; set; }
         public string Message { get; set; }
         public ObservableCollection<MessageData> Messages { get; }
@@ -58,33 +58,30 @@ namespace JustChatClient
             //SendMessageCommand = new Command(async () => await SendMessage(), () => IsConnected);
             hubConnection.Closed += async (error) =>
             {
-                  SendLocalMessage(String.Empty, "Подключение закрыто...");
+                  SendLocalMessage(String.Empty, "Подключение закрыто...",DateTime.Now);
                   IsConnected = false;
                   await Task.Delay(5000);
                   await Connect();
             };  
-            hubConnection.On<string, string>("Receive", (user, message) =>
+            hubConnection.On<string, string, DateTime>("Receive", (user, message, time) =>
             {
-                SendLocalMessage(user, message);
+                SendLocalMessage(user, message, time.ToLocalTime());
             });
         }
 
 
         public async Task Connect()
         {
-            if (IsConnected) { SendLocalMessage("client", "connected=true"); return; };
+            if (IsConnected) { SendLocalMessage("client", "connected=true", DateTime.Now); return; };
             try
             {
-                //hubConnection = new HubConnectionBuilder()
-                //.WithUrl($"https://{IP}:5001/chat")
-                //.Build();
-                await hubConnection.StartAsync();
-                SendLocalMessage(string.Empty, "Вы вошли в чат");
+                await hubConnection.StartAsync().ConfigureAwait(true);
+                SendLocalMessage(string.Empty, "Вы вошли в чат", DateTime.Now);
                 IsConnected = true;
             }
             catch (Exception ex)
             {
-                SendLocalMessage(string.Empty, $"Не удалось войти в чат по причине: {ex.Message}");
+                SendLocalMessage(string.Empty, $"Не удалось войти в чат по причине: {ex.Message}",DateTime.Now);
             }
         }
         public async Task Disconnect()
@@ -92,7 +89,7 @@ namespace JustChatClient
             if (!IsConnected) return;
             await hubConnection.StopAsync();
             IsConnected = false;
-            SendLocalMessage(string.Empty, "Вы вышли из чата");
+            SendLocalMessage(string.Empty, "Вы вышли из чата", DateTime.Now);
         }
         public async Task SendMessage()
         {
@@ -103,16 +100,16 @@ namespace JustChatClient
             }
             catch(Exception ex)
             {
-                SendLocalMessage(string.Empty, $"Сообщение не отправлено потому, что: {ex.Message}");
+                SendLocalMessage(string.Empty, $"Сообщение не отправлено потому, что: {ex.Message}",DateTime.Now);
             }
             finally
             {
                 IsBusy = false;
             }
         }
-        private void SendLocalMessage(string user,string message)
+        private void SendLocalMessage(string user,string message, DateTime time)
         {
-            Messages.Insert(0, new MessageData { Message = message, User = user });
+            Messages.Insert(0, new MessageData { Message = message, User = user , Time = $"[{time.ToLongTimeString()}]"});
         }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string prop = "")

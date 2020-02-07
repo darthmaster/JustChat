@@ -1,9 +1,10 @@
-﻿<Window x:Name="JCC" x:Class="JustChatClient.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JustChatClient"
+        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Name="JCC" x:Class="JustChatClient.MainWindow"
         mc:Ignorable="d"
         Title="JCC - Just Chat Client" 
         WindowStyle="SingleBorderWindow" 
@@ -12,9 +13,9 @@
         Closing="Window_Closing" 
         HorizontalAlignment="Stretch" 
         Icon="JustChat.ico" 
-        Height="500" Width="570" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MinWidth="495" MinHeight="500" Grid.IsSharedSizeScope="True">
+        Height="500" Width="570" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MinWidth="495" MinHeight="500" Grid.IsSharedSizeScope="True" Background="White">
     <Grid 
-        ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled" Opacity="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="20*"/>
@@ -24,7 +25,7 @@
             TextWrapping="Wrap" 
             VerticalAlignment="Bottom" 
             KeyDown="inputBox_KeyDown" 
-            Margin="0,0,50,25" BorderThickness="2,2,2,2" Grid.Column="1" Height="24" MinHeight="24" MinWidth="240" MaxHeight="155" FontFamily="Fira Mono"
+            Margin="0,0,52,25" BorderThickness="2,2,2,2" Grid.Column="1" Height="24" MinHeight="24" MinWidth="240" MaxHeight="155" FontFamily="Fira Mono"
         />
         <TextBox 
             x:Name="userName" 
@@ -34,14 +35,14 @@
             VerticalAlignment="Top" 
             Margin="47,10,0,0" BorderBrush="#00ABADB3" MaxLines="1" Height="26" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" VerticalScrollBarVisibility="Disabled" MinWidth="138" MinHeight="26" MaxHeight="26" Grid.Column="1" HorizontalScrollBarVisibility="Disabled" BorderThickness="1,1,1,1"
         />
-        <ListView 
+        <ListBox 
             x:Name="chatLog"  
             ItemsSource="{Binding Messages}" 
             Focusable="False" 
             Margin="0,44,10,54" 
             VerticalContentAlignment="Center" 
-            BorderThickness="2,2,2,2" SelectionMode="Extended" Background="{x:Null}" Grid.Column="1" Grid.IsSharedSizeScope="True" HorizontalAlignment="Stretch" >
-            <ListView.ItemContainerStyle>
+            BorderThickness="2,2,2,2" SelectionMode="Single" Background="{x:Null}" Grid.Column="1" Grid.IsSharedSizeScope="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="chatLog_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" >
+            <ListBox.ItemContainerStyle>
                 <Style 
                     TargetType="{x:Type ListBoxItem}"
                     BasedOn="{StaticResource {x:Type ListBoxItem}}">
@@ -50,48 +51,49 @@
                         Value="Bottom"
                     />
                 </Style>
-            </ListView.ItemContainerStyle>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel 
                         LastChildFill="False" 
-                        ClipToBounds="False" />
+                        ClipToBounds="True" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <ListView.ItemTemplate>
+            <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel x:Name="chatMessage" 
                         Orientation="Horizontal" 
                         VerticalAlignment="Stretch" 
                         IsEnabled="True" 
                         ClipToBounds="True" 
-                        Focusable="False" Grid.IsSharedSizeScope="True">
+                        Focusable="False" Grid.IsSharedSizeScope="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                         <Label 
-                            Focusable="False"
-                            x:Name="messageSender" 
+                            Focusable="False" 
                             Content="{Binding User}"
                             FontFamily="Fira Mono"
                             FontWeight="Bold" 
                             FontStyle="Italic"/>
                         <TextBlock 
-                            Focusable="False"
-                            x:Name="messageText" 
+                            Focusable="False" 
                             Text="{Binding Message}" 
                             TextWrapping="Wrap" 
                             TextTrimming="WordEllipsis" 
                             VerticalAlignment="Center"
                             FontFamily="Fira Mono"/>
+                        <Label 
+                            Content="{Binding Time}"
+                            FontFamily="Fira Mono"
+                            FontStyle="Italic" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
                     </WrapPanel>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <Label Content="Name:" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" FontWeight="Bold" Grid.Column="1"/>
         <StatusBar Height="20" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
             <CheckBox 
             x:Name="isConnected" 
-            Content="Connection
-                " 
+            Content="Connection                 " 
             HorizontalAlignment="Left" 
             VerticalAlignment="Center" 
             IsChecked="{Binding IsConnected}" 
@@ -121,9 +123,42 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button x:Name="sendButton" Content="Send" Margin="0,0,10,25" VerticalAlignment="Bottom" Height="24" Click="SendButton_Click" BorderThickness="2,2,2,2" BorderBrush="#FFABADB3" Grid.Column="1" HorizontalAlignment="Right" Width="40"/>
+        <Button x:Name="sendButton" 
+                Content="Send" 
+                Margin="0,0,10,25" 
+                VerticalAlignment="Bottom" 
+                Height="24" 
+                Click="SendButton_Click" 
+                BorderThickness="2,2,2,2" 
+                BorderBrush="#FFABADB3" 
+                Grid.Column="1" 
+                HorizontalAlignment="Right" 
+                Width="42"/>
         <Label Content="ServerIP:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-        <TextBox x:Name="serverIP" HorizontalAlignment="Left" Height="26" Margin="71,10,0,0" Text="localhost" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" BorderThickness="1,1,1,1" BorderBrush="#00ABADB3"/>
-        <Button x:Name="loginButton" Content="Connect" Grid.Column="1" Margin="0,10,10,0" VerticalAlignment="Top" Click="LoginButton_Click" BorderThickness="2,2,2,2" Height="26" Padding="0,0,0,0" HorizontalAlignment="Right" Width="85"/>
+        <TextBox x:Name="serverIP" 
+                 HorizontalAlignment="Left" 
+                 Height="26" 
+                 Margin="71,10,0,0" 
+                 Text="192.168.13.97" 
+                 TextWrapping="NoWrap" 
+                 VerticalAlignment="Top" 
+                 Width="124" 
+                 HorizontalScrollBarVisibility="Disabled" 
+                 VerticalScrollBarVisibility="Disabled" 
+                 VerticalContentAlignment="Center" 
+                 HorizontalContentAlignment="Left" 
+                 BorderThickness="1,1,1,1" 
+                 BorderBrush="#00ABADB3"/>
+        <Button x:Name="loginButton" 
+                Content="Connect" 
+                Grid.Column="1" 
+                Margin="0,10,10,0" 
+                VerticalAlignment="Top" 
+                Click="LoginButton_Click" 
+                BorderThickness="2,2,2,2" 
+                Height="26" Padding="0,0,0,0" 
+                HorizontalAlignment="Right" 
+                Width="85">
+        </Button>
     </Grid>
 </Window>

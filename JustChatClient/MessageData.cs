@@ -8,6 +8,6 @@ namespace JustChatClient
     {
         public string Message { get; set; }
         public string User { get; set; }
-        public DateTime Time { get; set; }
+        public string Time { get; set; }
     }
 }

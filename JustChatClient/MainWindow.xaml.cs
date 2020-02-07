@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using AdonisUI;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JustChatClient
 {
     public partial class MainWindow : Window
     {
         ChatViewModel chat;
-        //int MaxInputStringLength = 35;
-        //int MaxChatStringLength = 35;
         public MainWindow()
         {
             InitializeComponent();
             isConnected.IsChecked = false;
+            inputBox.IsEnabled = false;
+            sendButton.IsEnabled = false;
+            AdonisUI.ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.DarkColorScheme);
         }
 
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
@@ -27,20 +31,28 @@ namespace JustChatClient
                 SendButton_Click(sender, e);
             }
         }
-       
+        [Authorize]
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if ((bool)isConnected.IsChecked)
             {
-                await chat.Disconnect();
+                chat.Disconnect();
+                inputBox.IsEnabled = false;
+                sendButton.IsEnabled = false;
                 loginButton.Content = "Connect";
             }
             else
             {
                 chat = new ChatViewModel(serverIP.Text);
                 await chat.Connect();
+                chat.Messages.CollectionChanged += Messages_CollectionChanged;
                 this.DataContext = chat;
-                if (chat.IsConnected) loginButton.Content = "Disconnect";
+                if (chat.IsConnected)
+                {
+                    inputBox.IsEnabled = true;
+                    sendButton.IsEnabled = true;
+                    loginButton.Content = "Disconnect";
+                }
             }
         }
         private async void SendButton_Click(object sender, RoutedEventArgs e)
@@ -52,42 +64,21 @@ namespace JustChatClient
         }
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            await chat.Disconnect();
+            if ((bool)isConnected.IsChecked)
+            {
+                await chat.Disconnect();
+            }
         }
 
-        //private void JCC_SizeChanged(object sender, SizeChangedEventArgs e)
-        //{
-        //    MaxChatStringLength = (int)chatLog.ActualWidth / 7;
-        //    MaxInputStringLength = (int)inputBox.ActualWidth / 7;
+        private void chatLog_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            //chatLog.SelectedIndex = -1;
+        }
 
-        //}
-
-        //public void messageFormat()
-        //{//7 на пиксель
-        //    int maxLen = MaxChatStringLength - (chat.Messages[-1].User.Length + 1);
-        //    if (chat.Messages[-1].Message.Length > maxLen)
-        //    {
-        //        string new_msg = string.Empty;
-        //        var msg = chat.Messages[-1].Message.Split(" ");
-        //        foreach (string str in msg)
-        //        {
-        //            if ((new_msg.Length - new_msg.LastIndexOf("\n") + str.Length) <= maxLen)
-        //            {
-        //                new_msg += " " + str;
-        //            }
-        //            else
-        //            {
-        //                new_msg += "\n" + str;
-        //            }
-        //        }
-        //        chat.Messages[-1].Message = new_msg;
-        //    }
-
-        //}
-
-        //private void chatLog_Selected(object sender, RoutedEventArgs e)
-        //{
-        //    messageFormat();      
-        //}
+        private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            chatLog.SelectedItem = chatLog.Items[0];
+            chatLog.ScrollIntoView(chatLog.Items[0]);
+        }
     }
 }

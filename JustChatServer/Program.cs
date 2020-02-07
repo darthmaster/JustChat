@@ -16,8 +16,7 @@ namespace JustChat
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-            
+            CreateHostBuilder(args).Build().Run();;
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -37,7 +36,7 @@ namespace JustChat
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
             List<string> ips = new List<string>();
-            int i=0;
+            int i=1;
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
@@ -48,9 +47,8 @@ namespace JustChat
                 }
             }
             Console.Write("Выберите аддрес запуска сервера: ");
-            return ips[Convert.ToInt32(Console.ReadLine())];
+            return ips[Convert.ToInt32(Console.ReadLine()) - 1];
             throw new Exception("Local IP Address Not Found!");
-            
         }
     }
 }

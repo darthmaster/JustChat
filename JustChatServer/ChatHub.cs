@@ -8,16 +8,24 @@ namespace JustChat
 {
     public class ChatHub : Hub
     {
-        public async Task Send(string username, string message) => await Clients.All.SendAsync("Receive", username, message);
+        public async Task Send(string username, string message) => await Clients.All.SendAsync("Receive", username, message, DateTime.UtcNow).ConfigureAwait(false);
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("Receive", string.Empty, $"{Context.ConnectionId} врывается в тред!");
-            await base.OnConnectedAsync();
+            Console.Write($"[{DateTime.Now.TimeOfDay}] {Context.ConnectionId}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(" is connected.");
+            Console.ResetColor();
+            await Clients.All.SendAsync("Receive", string.Empty, $"{Context.ConnectionId} врывается в тред!").ConfigureAwait(false);
+            await base.OnConnectedAsync().ConfigureAwait(false);
         }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.All.SendAsync("Receive", string.Empty, $"{Context.ConnectionId} покинул нас. Press F to pay respect.");
-            await base.OnDisconnectedAsync(exception);
+            Console.Write($"[{DateTime.Now.TimeOfDay}] {Context.ConnectionId}");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(" is disconnected.");
+            Console.ResetColor();
+            await Clients.All.SendAsync("Receive", string.Empty, $"{Context.ConnectionId} покинул нас. Press F to pay respect.").ConfigureAwait(false);
+            await base.OnDisconnectedAsync(exception).ConfigureAwait(false);
         }
     }
 }
